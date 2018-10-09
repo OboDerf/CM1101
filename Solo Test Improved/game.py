@@ -183,7 +183,9 @@ def print_menu(exits, room_items, inv_items):
     What do you want to do?
 
     """
-    print("You can:")
+
+    
+    print("You have " + str(own_mass) +" out of 2 kg\n\nYou can:")
     for direction in exits: print_exit(direction, exit_leads_to(exits, direction))
     for a in room_items: print("TAKE " + a["id"].upper() + " to take " + a["name"])
     for b in inv_items: print("DROP " + b["id"].upper() + " to drop " + b["name"])
@@ -227,12 +229,17 @@ def execute_take(item, room_inv, own_inv):
     there is no such item in the room, this function prints
     "You cannot take that."
     """
+    global own_mass
     needed = True
     for a in room_inv:
-        if item in a["id"]:
+        if item in a["id"] and own_mass + a["mass"] <= 2:
             needed = False
             own_inv.append(a)
             room_inv.remove(a)
+            own_mass += a["mass"]
+        elif item in a["id"] and own_mass + a["mass"] > 2:
+            print("Your inventory would go above 2kg.\nCurrent: "
+                  + str(own_mass) + " kg \nItem mass: " + str(a["mass"]) + " kg") 
     if needed: print("You cannot take that")
     # Completed
     
@@ -242,12 +249,14 @@ def execute_drop(item, room_inv, own_inv):
     player's inventory to list of items in the current room. However, if there is
     no such item in the inventory, this function prints "You cannot drop that."
     """
+    global own_mass
     needed = True
     for a in own_inv:
         if item in a["id"]:
             needed = False
             room_inv.append(a)
             own_inv.remove(a)
+            own_mass -= a["mass"]
     if needed: print("You cannot take that")
     # Completed
     
