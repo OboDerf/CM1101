@@ -43,6 +43,7 @@ def remove_spaces(text):
     """
 
     return text.strip(' ')
+    # Completed
 
 
 def normalise_input(user_input):
@@ -59,6 +60,7 @@ def normalise_input(user_input):
     """
 
     return remove_spaces(remove_punct(user_input)).lower()
+    # Completed
 
     
 def display_room(room):
@@ -80,7 +82,9 @@ def display_room(room):
 
     Note: <BLANKLINE> here means that doctest should expect a blank line.
     """
-    # pass # The pass statement does nothing. Replace it with the body of your function.
+
+    print("\n" + room["name"].upper() + "\n \n" + room["description"] + "\n")
+    # Completed
 
     
 def exit_leads_to(exits, direction):
@@ -95,7 +99,9 @@ def exit_leads_to(exits, direction):
     >>> exit_leads_to(rooms["Tutor"]["exits"], "west")
     'Reception'
     """
-    pass
+
+    return rooms[exits[direction]]["name"]
+    # Completed
     
 
 def print_menu_line(direction, leads_to):
@@ -111,7 +117,9 @@ def print_menu_line(direction, leads_to):
     >>> print_menu_line("south", "MJ and Simon's room")
     Go SOUTH to MJ and Simon's room.
     """
-    pass
+
+    print("Go " + direction.upper() + " to " + leads_to + ".")
+    # Completed
 
 
 def print_menu(exits):
@@ -129,13 +137,12 @@ def print_menu(exits):
     Go SOUTH to MJ and Simon's room.
     Where do you want to go?
     """
-    print("You can:")
     
-    # COMPLETE THIS PART:
-    # Iterate over available exits:
-    #     and for each exit print the appropriate menu line
-
+    print("You can:")
+    for a in exits:
+        print_menu_line(a, exit_leads_to(exits, a))
     print("Where do you want to go?")
+    # Completed
 
 
 def is_valid_exit(exits, user_input):
