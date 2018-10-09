@@ -161,7 +161,9 @@ def is_valid_exit(exits, user_input):
     >>> is_valid_exit(rooms["Parking"]["exits"], "east")
     True
     """
-    pass
+    
+    return user_input in exits
+    # Completed
 
 
 def menu(exits):
@@ -174,21 +176,12 @@ def menu(exits):
     of the chosen exit. Otherwise the menu is displayed again and the player
     prompted, repeatedly, until a correct choice is entered."""
 
-    # Repeat until the player enter a valid choice
     while True:
-        pass
-        # COMPLETE THIS PART:
-        
-        # Display menu
-
-        # Read player's input
-
-        # Normalise the input
-
-        # Check if the input makes sense (is valid exit)
-            # If so, return the player's choice
-
-
+        print_menu(exits)
+        choice = normalise_input(input())
+        if is_valid_exit(exits, choice):
+            return choice
+    # Completed
 
 
 def move(exits, direction):
@@ -203,31 +196,19 @@ def move(exits, direction):
     >>> move(rooms["Reception"]["exits"], "west") == rooms["Office"]
     False
     """
-    pass
 
+    return rooms[exits[direction]]
+    # Completed
+    
 
-# This is the entry point of our program
 def main():
-    # Start game at the reception
     current_room = rooms["Reception"]
-
-    # Main game loop
     while True:
-        # Display game status (room description etc.)
         display_room(current_room)
-
-        # What are the possible exits from the current room?
         exits = current_room["exits"]
-
-        # Show the menu with exits and ask the player
         direction = menu(exits)
-
-        # Move the protagonist, i.e. update the current room
         current_room = move(exits, direction)
 
 
-# Are we being run as a script? If so, run main().
-# '__main__' is the name of the scope in which top-level code executes.
-# See https://docs.python.org/3.4/library/__main__.html for explanation
 if __name__ == "__main__":
     main()
