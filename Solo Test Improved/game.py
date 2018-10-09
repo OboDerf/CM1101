@@ -24,7 +24,11 @@ def list_of_items(items):
     'money, a student handbook, laptop'
 
     """
-    pass
+    temp = ''
+    for a in items:
+        temp += a["name"]
+        if a != items[-1]: temp += ", "
+    return temp
 
 
 def print_room_items(room):
@@ -49,7 +53,9 @@ def print_room_items(room):
     Note: <BLANKLINE> here means that doctest should expect a blank line.
 
     """
-    pass
+    
+    if list_of_items(room["items"]): print("There is " + list_of_items(room["items"]) + " here.\n")
+    # Completed
 
 
 def print_inventory_items(items):
@@ -62,7 +68,7 @@ def print_inventory_items(items):
     <BLANKLINE>
 
     """
-    pass
+    if items: print("You have " + list_of_items(items) + ".\n")
 
 
 def print_room(room):
@@ -111,17 +117,10 @@ def print_room(room):
 
     Note: <BLANKLINE> here means that doctest should expect a blank line.
     """
-    # Display room name
-    print()
-    print(room["name"].upper())
-    print()
-    # Display room description
-    print(room["description"])
-    print()
 
-    #
-    # COMPLETE ME!
-    #
+    print("\n" + room["name"].upper() + "\n\n" + room["description"] + "\n")
+    print_room_items(room)
+
 
 def exit_leads_to(exits, direction):
     """This function takes a dictionary of exits and a direction (a particular
@@ -185,15 +184,9 @@ def print_menu(exits, room_items, inv_items):
 
     """
     print("You can:")
-    # Iterate over available exits
-    for direction in exits:
-        # Print the exit name and where it leads to
-        print_exit(direction, exit_leads_to(exits, direction))
-
-    #
-    # COMPLETE ME!
-    #
-    
+    for direction in exits: print_exit(direction, exit_leads_to(exits, direction))
+    for a in room_items: print("TAKE " + a["id"].upper() + " to take " + a["name"])
+    for b in inv_items: print("DROP " + b["id"].upper() + " to drop " + b["name"])
     print("What do you want to do?")
 
 
@@ -216,33 +209,50 @@ def is_valid_exit(exits, chosen_exit):
     return chosen_exit in exits
 
 
-def execute_go(direction):
+def execute_go(direction, exits):
     """This function, given the direction (e.g. "south") updates the current room
     to reflect the movement of the player if the direction is a valid exit
     (and prints the name of the room into which the player is
     moving). Otherwise, it prints "You cannot go there."
     """
-    pass
+    global current_room
+    if is_valid_exit(exits, direction): current_room = move(exits, direction)
+    else: print("You cannot go there.")
+    # Completed
 
 
-def execute_take(item_id):
+def execute_take(item, room_inv, own_inv):
     """This function takes an item_id as an argument and moves this item from the
     list of items in the current room to the player's inventory. However, if
     there is no such item in the room, this function prints
     "You cannot take that."
     """
-    pass
+    needed = True
+    for a in room_inv:
+        if item in a["id"]:
+            needed = False
+            own_inv.append(a)
+            room_inv.remove(a)
+    if needed: print("You cannot take that")
+    # Completed
     
 
-def execute_drop(item_id):
+def execute_drop(item, room_inv, own_inv):
     """This function takes an item_id as an argument and moves this item from the
     player's inventory to list of items in the current room. However, if there is
     no such item in the inventory, this function prints "You cannot drop that."
     """
-    pass
+    needed = True
+    for a in own_inv:
+        if item in a["id"]:
+            needed = False
+            room_inv.append(a)
+            own_inv.remove(a)
+    if needed: print("You cannot take that")
+    # Completed
     
 
-def execute_command(command):
+def execute_command(command, exits, room_inv, own_inv):
     """This function takes a command (a list of words as returned by
     normalise_input) and, depending on the type of action (the first word of
     the command: "go", "take", or "drop"), executes either execute_go,
@@ -255,19 +265,19 @@ def execute_command(command):
 
     if command[0] == "go":
         if len(command) > 1:
-            execute_go(command[1])
+            execute_go(command[1], exits)
         else:
             print("Go where?")
 
     elif command[0] == "take":
         if len(command) > 1:
-            execute_take(command[1])
+            execute_take(command[1], room_inv, own_inv)
         else:
             print("Take what?")
 
     elif command[0] == "drop":
         if len(command) > 1:
-            execute_drop(command[1])
+            execute_drop(command[1], room_inv, own_inv)
         else:
             print("Drop what?")
 
@@ -326,7 +336,7 @@ def main():
         command = menu(current_room["exits"], current_room["items"], inventory)
 
         # Execute the player's command
-        execute_command(command)
+        execute_command(command, current_room["exits"], current_room["items"], inventory)
 
 
 

@@ -9,7 +9,7 @@ skip_words = ['a', 'about', 'all', 'an', 'another', 'any', 'around', 'at',
               'of', 'off', 'oh', 'on', 'please', 'small', 'some', 'soon',
               'that', 'the', 'then', 'this', 'those', 'through', 'till', 'to',
               'towards', 'until', 'us', 'want', 'we', 'what', 'when', 'why',
-              'wish', 'with', 'would']
+              'wish', 'with', 'would', '']
 
 
 def filter_words(words, skip_words):
@@ -27,7 +27,12 @@ def filter_words(words, skip_words):
     ['go', 'passage', 'south']
 
     """
-    pass
+    
+    for a in words[::-1]:
+        if a in skip_words:
+            words.remove(a)
+    return words
+    # Completed
 
     
 def remove_punct(text):
@@ -43,12 +48,12 @@ def remove_punct(text):
     >>> remove_punct(",go!So.?uTh")
     'goSouTh'
     """
-    no_punct = ""
-    for char in text:
-        if not (char in string.punctuation):
-            no_punct = no_punct + char
-
-    return no_punct
+    
+    for a in text:
+        if a in string.punctuation:
+            text = text.replace(a, '')
+    return text
+    # Fixed :D
 
 
 def normalise_input(user_input):
@@ -76,9 +81,6 @@ def normalise_input(user_input):
     ['go', 'passage', 'south']
 
     """
-    # Remove punctuation and convert to lower case
-    no_punct = remove_punct(user_input).lower()
-
-    #
-    # COMPLETE ME!
-    #
+    
+    return filter_words((remove_punct(user_input).lower()).split(' '), skip_words)
+    # Completed
