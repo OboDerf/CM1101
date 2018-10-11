@@ -236,7 +236,7 @@ def execute_take(item, room_inv, own_inv):
             needed = False
             own_inv.append(a)
             room_inv.remove(a)
-            own_mass += a["mass"]
+            own_mass = round(own_mass + a["mass"], 1)
         elif item in a["id"] and own_mass + a["mass"] > 2:
             print("Your inventory would go above 2kg.\nCurrent: "
                   + str(own_mass) + " kg \nItem mass: " + str(a["mass"]) + " kg") 
@@ -256,8 +256,8 @@ def execute_drop(item, room_inv, own_inv):
             needed = False
             room_inv.append(a)
             own_inv.remove(a)
-            own_mass -= a["mass"]
-    if needed: print("You cannot take that")
+            own_mass = round(own_mass - a["mass"], 1)
+    if needed: print("You cannot drop that")
     # Completed
     
 
@@ -289,9 +289,10 @@ def execute_command(command, exits, room_inv, own_inv):
             execute_drop(command[1], room_inv, own_inv)
         else:
             print("Drop what?")
-
+            
     else:
         print("This makes no sense.")
+    # Edited to pass through local variables
 
 
 def menu(exits, room_items, inv_items):
@@ -300,18 +301,10 @@ def menu(exits, room_items, inv_items):
     actions using print_menu() function. It then prompts the player to type an
     action. The players's input is normalised using the normalise_input()
     function before being returned.
-
     """
-
-    # Display menu
     print_menu(exits, room_items, inv_items)
-
-    # Read player's input
     user_input = input("> ")
-
-    # Normalise the input
     normalised_user_input = normalise_input(user_input)
-
     return normalised_user_input
 
 
@@ -327,26 +320,28 @@ def move(exits, direction):
     >>> move(rooms["Reception"]["exits"], "west") == rooms["Office"]
     False
     """
-
-    # Next room to go to
     return rooms[exits[direction]]
 
 
-# This is the entry point of our program
-def main():
+def victory_check(room):
+    if room["name"] == "Reception" and len(room["items"]) == 6:
+        print("You've gathered all items into Reception!\n" + 
+              "By creating unneeded work for the cleaners, you've met the requirements for winning.\n" +
+              "Well done, aren't you a clever cookie!")
+        return True
+    else:
+        return False
+    # Completed
 
-    # Main game loop
+
+def main():
     while True:
-        # Display game status (room description, inventory etc.)
         print_room(current_room)
         print_inventory_items(inventory)
-
-        # Show the menu with possible actions and ask the player
         command = menu(current_room["exits"], current_room["items"], inventory)
-
-        # Execute the player's command
         execute_command(command, current_room["exits"], current_room["items"], inventory)
-
+        if victory_check(current_room): break
+    # Added in 'Victory check'
 
 
 # Are we being run as a script? If so, run main().
